@@ -1,7 +1,6 @@
 package ss090310.etf.ac.bg.rs.memorija_diplomski;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,8 +14,31 @@ import java.util.List;
 public class GameGridAdapter extends BaseAdapter {
     private Context mContext;
     private int cardNum;
-    private List<Drawable> cardFronts;
+    private List<Integer> cardFronts;
 
+    public Context getmContext() {
+        return mContext;
+    }
+
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
+    }
+
+    public int getCardNum() {
+        return cardNum;
+    }
+
+    public void setCardNum(int cardNum) {
+        this.cardNum = cardNum;
+    }
+
+    public List<Integer> getCardFronts() {
+        return cardFronts;
+    }
+
+    public void setCardFronts(List<Integer> cardFronts) {
+        this.cardFronts = cardFronts;
+    }
 
     public GameGridAdapter(Context context, int cardNum) {
         this.mContext = context;
