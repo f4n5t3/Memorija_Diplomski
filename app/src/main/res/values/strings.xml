@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Memorija</string>
+    <string name="label_main_menu">Glavni Meni</string>
+    <string name="label_number_of_players">Broj igrača:</string>
+    <string name="label_difficulty">Težina:</string>
+    <string name="label_number_of_cards">Broj karata:</string>
+    <string name="button_label_start_game">Start</string>
+
+    <string-array name="values_num_players">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="values_difficulty">
+        <item>Lako</item>
+        <item>Normalno</item>
+        <item>Teško</item>
+    </string-array>
+
+    <string-array name="number_of_cards_entries">
+        <item>8</item>
+        <item>12</item>
+        <item>16</item>
+        <item>20</item>
+        <item>24</item>
+        <item>28</item>
+        <item>32</item>
+        <item>36</item>
+        <item>40</item>
+        <item>44</item>
+        <item>48</item>
+        <item>52</item>
+        <item>56</item>
+        <item>60</item>
+        <item>64</item>
+    </string-array>
+    <string name="title_activity_single_player">SinglePlayerActivity</string>
+
+</resources>
