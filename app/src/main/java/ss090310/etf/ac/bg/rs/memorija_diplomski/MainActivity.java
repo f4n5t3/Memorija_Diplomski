@@ -49,16 +49,18 @@ public class MainActivity extends AppCompatActivity {
         Button startGameButton = (Button) findViewById(R.id.start_game_button);
 
         startGameButton.setOnClickListener(new View.OnClickListener() {
+
             Spinner numPlayersSpinner = (Spinner) findViewById(R.id.spinner_num_players);
             Spinner cardNumSpinner = (Spinner) findViewById(R.id.spinner_num_cards);
             Spinner difficultySpinner = (Spinner) findViewById(R.id.spinner_difficulty);
-            int playerNum = Integer.parseInt(numPlayersSpinner.getSelectedItem().toString());
-            int cardNum = Integer.parseInt(cardNumSpinner.getSelectedItem().toString());
-            String difficulty = difficultySpinner.getSelectedItem().toString();
-            Intent startGameIntent;
 
             @Override
             public void onClick(View v) {
+                int playerNum = Integer.parseInt(numPlayersSpinner.getSelectedItem().toString());
+                int cardNum = Integer.parseInt(cardNumSpinner.getSelectedItem().toString());
+                String difficulty = difficultySpinner.getSelectedItem().toString();
+                Intent startGameIntent;
+
                 if (playerNum == 1) {
                     startGameIntent = new Intent(getApplicationContext(), SinglePlayerActivity.class);
                 }
