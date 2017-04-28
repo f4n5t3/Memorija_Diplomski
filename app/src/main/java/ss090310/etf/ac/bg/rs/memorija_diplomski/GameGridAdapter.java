@@ -15,13 +15,13 @@ import java.util.List;
  * Created by Stefan on 23/04/2017.
  */
 
-public class GameGridAdapter extends BaseAdapter {
+class GameGridAdapter extends BaseAdapter {
     private Context mContext;
     private int cardNum;
     private List<Integer> cardFronts;
     private String difficulty;
 
-    public GameGridAdapter(Context context, int cardNum, String difficulty) {
+    GameGridAdapter(Context context, int cardNum, String difficulty) {
         this.mContext = context;
         this.cardNum = cardNum;
         this.difficulty = difficulty;
@@ -38,32 +38,6 @@ public class GameGridAdapter extends BaseAdapter {
         }
         Collections.shuffle(cardFronts);
     }
-
-    public Context getmContext() {
-        return mContext;
-    }
-
-    public void setmContext(Context mContext) {
-        this.mContext = mContext;
-    }
-
-    public int getCardNum() {
-        return cardNum;
-    }
-
-    public void setCardNum(int cardNum) {
-        this.cardNum = cardNum;
-    }
-
-    public List<Integer> getCardFronts() {
-        return cardFronts;
-    }
-
-    public void setCardFronts(List<Integer> cardFronts) {
-        this.cardFronts = cardFronts;
-    }
-
-
 
     @Override
     public int getCount() {
