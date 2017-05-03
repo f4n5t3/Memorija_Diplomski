@@ -15,7 +15,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final int SMALL_SCREEN_CARD_NUM_INDEX = 3;
-    private static final int NORMAL_SCREEN_CARD_NUM_INDEX = 7;
+    private static final int NORMAL_SCREEN_CARD_NUM_INDEX = 6;
     private static final int LARGE_SCREEN_CARD_NUM_INDEX = 10;
 
     @Override

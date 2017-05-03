@@ -12,6 +12,7 @@
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp"
         android:numColumns="4"
+        android:verticalSpacing="5dp"
     />
 
 </RelativeLayout>

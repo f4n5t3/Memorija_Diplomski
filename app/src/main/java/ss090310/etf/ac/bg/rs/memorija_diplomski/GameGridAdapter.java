@@ -1,7 +1,9 @@
 package ss090310.etf.ac.bg.rs.memorija_diplomski;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -24,6 +26,8 @@ class GameGridAdapter extends BaseAdapter {
     private boolean[] flipped, matched;
     private int flippedCard;
     private boolean busy = false;
+    private int matchedNum;
+    private int attemptsNum;
 
     GameGridAdapter(Context context, int cardNum, String difficulty) {
         this.mContext = context;
@@ -36,6 +40,8 @@ class GameGridAdapter extends BaseAdapter {
             matched[i] = false;
         }
         flippedCard = -1;
+        matchedNum = 0;
+        attemptsNum = 0;
         loadCards(difficulty, cardNum);
 
     }
@@ -95,6 +101,7 @@ class GameGridAdapter extends BaseAdapter {
             } else {
                 // One card is flipped, flip the second one
                 flipped[i] = true;
+                attemptsNum++;
                 notifyDataSetChanged();
 
                 busy = true;
@@ -105,6 +112,9 @@ class GameGridAdapter extends BaseAdapter {
                         if (cardFronts.get(flippedCard).equals(cardFronts.get(i))) {
                             matched[flippedCard] = true;
                             matched[i] = true;
+                            matchedNum++;
+                            Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+                            v.vibrate(250);
                         }
                         else {
                             flipped[flippedCard] = false;
@@ -113,9 +123,18 @@ class GameGridAdapter extends BaseAdapter {
                         flippedCard = -1;
                         busy = false;
                         notifyDataSetChanged();
+                        if (matchedNum == cardNum / 2) {
+                            Intent endGameIntent = new Intent(mContext, EndGameActivity.class);
+                            endGameIntent.putExtra("score", calculateScore());
+                            mContext.startActivity(endGameIntent);
+                        }
                     }
                 }, 1000);
             }
         }
+    }
+
+    private int calculateScore() {
+        return cardNum * 10 - attemptsNum;
     }
 }
