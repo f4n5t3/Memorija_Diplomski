@@ -1,6 +1,7 @@
 package ss090310.etf.ac.bg.rs.memorija_diplomski;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -19,13 +20,22 @@ class GameGridAdapter extends BaseAdapter {
     private Context mContext;
     private int cardNum;
     private List<Integer> cardFronts;
-    private String difficulty;
+    private int backImage;
+    private boolean[] flipped, matched;
+    private int flippedCard;
+    private boolean busy = false;
 
     GameGridAdapter(Context context, int cardNum, String difficulty) {
         this.mContext = context;
         this.cardNum = cardNum;
-        this.difficulty = difficulty;
-
+        this.backImage = R.drawable.back_image;
+        flipped = new boolean[cardNum];
+        matched = new boolean[cardNum];
+        for (int i = 0; i < cardNum; i++) {
+            flipped[i] = false;
+            matched[i] = false;
+        }
+        flippedCard = -1;
         loadCards(difficulty, cardNum);
 
     }
@@ -64,9 +74,48 @@ class GameGridAdapter extends BaseAdapter {
             imageView.setLayoutParams(new GridView.LayoutParams(100, 100));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
-
-        imageView.setImageResource(cardFronts.get(position));
-
+        if (matched[position]) {
+            imageView.setImageDrawable(null);
+        }
+        else if (flipped[position]) {
+                imageView.setImageResource(cardFronts.get(position));
+        } else {
+            imageView.setImageResource(backImage);
+        }
         return imageView;
+    }
+
+    void flip(final int i) {
+        if (!flipped[i] && !matched[i] && !busy) {
+            if (flippedCard == -1) {
+                // No cards are flipped, so flip the clicked one
+                flippedCard = i;
+                flipped[i] = true;
+                notifyDataSetChanged();
+            } else {
+                // One card is flipped, flip the second one
+                flipped[i] = true;
+                notifyDataSetChanged();
+
+                busy = true;
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (cardFronts.get(flippedCard).equals(cardFronts.get(i))) {
+                            matched[flippedCard] = true;
+                            matched[i] = true;
+                        }
+                        else {
+                            flipped[flippedCard] = false;
+                            flipped[i] = false;
+                        }
+                        flippedCard = -1;
+                        busy = false;
+                        notifyDataSetChanged();
+                    }
+                }, 1000);
+            }
+        }
     }
 }
