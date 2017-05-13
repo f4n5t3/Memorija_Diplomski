@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ss090310.etf.ac.bg.rs.memorija_diplomski.MainActivity">
+
+    <TextView
+        android:id="@+id/main_menu_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/label_main_menu"
+        android:textAppearance="@android:style/TextAppearance.Holo.Large" />
+
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/main_menu_textview"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="false"
+        android:layout_centerVertical="false"
+        android:columnCount="2"
+        android:rowCount="3">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/main_menu_item_margin"
+            android:layout_row="0"
+            android:text="@string/label_number_of_cards"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+
+        <Spinner
+            android:id="@+id/spinner_num_cards"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/main_menu_item_margin"
+            android:layout_row="0"
+            android:spinnerMode="dropdown" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/main_menu_item_margin"
+            android:layout_row="1"
+            android:text="@string/label_difficulty"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+
+        <Spinner
+            android:id="@+id/spinner_difficulty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/main_menu_item_margin"
+            android:layout_row="1"
+            android:entries="@array/values_difficulty"
+            android:spinnerMode="dropdown" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/main_menu_item_margin"
+            android:layout_row="2"
+            android:text="@string/label_number_of_players"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+
+        <Spinner
+            android:id="@+id/spinner_num_players"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="1"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/main_menu_item_margin"
+            android:layout_row="2"
+            android:entries="@array/values_num_players"
+            android:spinnerMode="dropdown" />
+    </GridLayout>
+
+    <Button android:id="@+id/start_game_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/main_screen_label_margin"
+        android:layout_centerHorizontal="true"
+        android:text="@string/button_label_start_game"
+        android:textSize="@dimen/main_menu_text_size"
+        android:textAllCaps="true"
+        android:layout_marginTop="@dimen/main_screen_label_margin"/>
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+</RelativeLayout>

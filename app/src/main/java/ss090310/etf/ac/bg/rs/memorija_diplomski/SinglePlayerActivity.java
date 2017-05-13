@@ -24,6 +24,7 @@ public class SinglePlayerActivity extends AppCompatActivity {
         mGridAdapter = new GameGridAdapter(this, numCards, difficulty.toLowerCase());
 
         GridView gameGrid = (GridView) findViewById(R.id.game_grid_view);
+
         gameGrid.setAdapter(mGridAdapter);
 
         gameGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {

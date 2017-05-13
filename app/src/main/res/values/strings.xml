@@ -39,4 +39,11 @@
     <string name="title_activity_single_player">SinglePlayerActivity</string>
     <string name="multiplayer_placeholder">Multiplayer not yet implemented</string>
 
+    <string name="host_game_label">Host game</string>
+    <string name="join_game_label">Join game</string>
+    <string name="log_in_label">Log In</string>
+    <string name="enter_username_label">Enter username</string>
+    <string name="change_username_label">Change username!</string>
+    <string name="ok_label">OK</string>
+
 </resources>

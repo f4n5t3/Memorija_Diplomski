@@ -16,7 +16,7 @@ import java.util.List;
 public class EndGameActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
-    public static final String GAME_PREFS = "HighScoresFile";
+    public static final String GAME_PREFS = MainActivity.GAME_PREFS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,41 +40,39 @@ public class EndGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent backToMainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                backToMainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(backToMainIntent);
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        updateHighScores(getIntent().getIntExtra("score", 0));
     }
 
     private void updateHighScores(int score) {
         if (score > 0) {
             SharedPreferences.Editor scoresEdit = prefs.edit();
             String scores = prefs.getString("highScores", "");
+            String username = prefs.getString("username", "");
+            ScoreEntry newScore = new ScoreEntry(username, score);
             if (scores.length() > 0) {
-                List<Integer> scoreList = new ArrayList<>();
+                List<ScoreEntry> scoreList = new ArrayList<>();
                 String[] oldScores = scores.split("\\|");
                 for (String s : oldScores) {
-                    scoreList.add(Integer.parseInt(s));
+                    String[] parts = s.split(" - ");
+                    scoreList.add(new ScoreEntry(parts[0], Integer.parseInt(parts[1])));
                 }
-                scoreList.add(score);
+                scoreList.add(newScore);
+
                 Collections.sort(scoreList);
-                Collections.reverse(scoreList);
 
                 StringBuilder builder = new StringBuilder("");
                 for (int i = 0; i < scoreList.size(); i++) {
                     if (i >= 10) break;
                     if (i > 0) builder.append("|");
-                    builder.append(scoreList.get(i));
+                    builder.append(scoreList.get(i).toString());
                 }
 
                 scoresEdit.putString("highScores", builder.toString());
             } else {
-                scoresEdit.putString("highScores", "" + score);
+                scoresEdit.putString("highScores", newScore.toString());
             }
             scoresEdit.apply();
         }
