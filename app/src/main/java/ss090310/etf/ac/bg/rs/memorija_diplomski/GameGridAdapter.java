@@ -129,7 +129,7 @@ class GameGridAdapter extends BaseAdapter {
                             mContext.startActivity(endGameIntent);
                         }
                     }
-                }, 1000);
+                }, 500);
             }
         }
     }
