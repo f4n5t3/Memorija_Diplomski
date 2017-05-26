@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -13,12 +14,16 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Stefan on 23/04/2017.
  */
 
 class GameGridAdapter extends BaseAdapter {
+
+    private static final int CARD_FLIP_TIME = 500;
+
     private Context mContext;
     private int cardNum;
     private List<Integer> cardFronts;
@@ -28,8 +33,10 @@ class GameGridAdapter extends BaseAdapter {
     private boolean busy = false;
     private int matchedNum;
     private int attemptsNum;
+    private boolean multiplayer;
+    private int seed;
 
-    GameGridAdapter(Context context, int cardNum, String difficulty) {
+    GameGridAdapter(Context context, int cardNum, String difficulty, boolean isMultiplayer) {
         this.mContext = context;
         this.cardNum = cardNum;
         this.backImage = R.drawable.back_image;
@@ -42,17 +49,23 @@ class GameGridAdapter extends BaseAdapter {
         flippedCard = -1;
         matchedNum = 0;
         attemptsNum = 0;
+        multiplayer = isMultiplayer;
+        seed = 20;
         loadCards(difficulty, cardNum);
-
     }
 
     private void loadCards(String difficulty, int cardNum) {
         cardFronts = new ArrayList<>();
         for (int i = 0; i < cardNum/2; i++) {
-            cardFronts.add(mContext.getResources().getIdentifier(difficulty + "_" + i, "drawable", mContext.getPackageName()));
-            cardFronts.add(mContext.getResources().getIdentifier(difficulty + "_" + i, "drawable", mContext.getPackageName()));
+            cardFronts.add(mContext.getResources().getIdentifier(difficulty.toLowerCase() + "_" + i, "drawable", mContext.getPackageName()));
+            cardFronts.add(mContext.getResources().getIdentifier(difficulty.toLowerCase() + "_" + i, "drawable", mContext.getPackageName()));
         }
-        Collections.shuffle(cardFronts);
+        if (multiplayer) {
+            Random r = new Random(seed);
+            Collections.shuffle(cardFronts, r);
+        } else {
+            Collections.shuffle(cardFronts);
+        }
     }
 
     @Override
@@ -77,7 +90,7 @@ class GameGridAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         } else {
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(100, 100));
+            imageView.setLayoutParams(getCardDimensions());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
         if (matched[position]) {
@@ -89,6 +102,15 @@ class GameGridAdapter extends BaseAdapter {
             imageView.setImageResource(backImage);
         }
         return imageView;
+    }
+
+    private GridView.LayoutParams getCardDimensions() {
+        DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
+
+        int cardWidth = Math.round(displayMetrics.widthPixels / 4);
+        int cardHeight = Math.round(displayMetrics.heightPixels / (cardNum / 3));
+
+        return new GridView.LayoutParams(cardWidth, cardHeight);
     }
 
     void flip(final int i) {
@@ -129,12 +151,17 @@ class GameGridAdapter extends BaseAdapter {
                             mContext.startActivity(endGameIntent);
                         }
                     }
-                }, 500);
+                }, CARD_FLIP_TIME);
             }
         }
     }
 
     private int calculateScore() {
+        // TODO: Change scoring system
         return cardNum * 10 - attemptsNum;
+    }
+
+    int getAttemptsNum() {
+        return attemptsNum;
     }
 }

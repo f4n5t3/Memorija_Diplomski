@@ -22,9 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private static final int SMALL_SCREEN_CARD_NUM_INDEX = 3;
-    private static final int NORMAL_SCREEN_CARD_NUM_INDEX = 6;
-    private static final int LARGE_SCREEN_CARD_NUM_INDEX = 10;
+    private static final int SMALL_SCREEN_CARD_NUM_INDEX = 2;
+    private static final int NORMAL_SCREEN_CARD_NUM_INDEX = 3;
+    private static final int LARGE_SCREEN_CARD_NUM_INDEX = 7;
 
     private SharedPreferences preferences;
     public static final String GAME_PREFS = "SettingsFile";
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "onClick: Settings Saved");
                 String difficulty = preferences.getString("difficulty", "easy");
                 int cardNum = preferences.getInt("card_number", 16);
-                Intent startGameIntent = new Intent(getApplicationContext(), MultiPlayerActivity.class);
+                Intent startGameIntent = new Intent(getApplicationContext(), SelectMultiplayerActivity.class);
 
                 startGameIntent.putExtra("difficulty", difficulty).putExtra("cardNum", cardNum);
                 startActivity(startGameIntent);
