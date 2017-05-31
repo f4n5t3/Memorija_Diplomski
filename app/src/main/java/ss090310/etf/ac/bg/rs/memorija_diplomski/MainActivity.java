@@ -22,9 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private static final int SMALL_SCREEN_CARD_NUM_INDEX = 2;
-    private static final int NORMAL_SCREEN_CARD_NUM_INDEX = 3;
-    private static final int LARGE_SCREEN_CARD_NUM_INDEX = 7;
+    private static final int SMALL_SCREEN_CARD_NUM_INDEX = 3;
+    private static final int NORMAL_SCREEN_CARD_NUM_INDEX = 5;
+    private static final int LARGE_SCREEN_CARD_NUM_INDEX = 8;
 
     private SharedPreferences preferences;
     public static final String GAME_PREFS = "SettingsFile";

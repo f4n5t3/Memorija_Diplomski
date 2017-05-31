@@ -25,6 +25,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 public class MultiPlayerLobbyActivity extends AppCompatActivity {
 
@@ -72,7 +73,6 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
 
         players = new ArrayList<>();
         playerNum = 0;
-        seed = 16;
         
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -129,23 +129,26 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
         deviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                WifiP2pDevice device = peers.get(position);
-                WifiP2pConfig deviceConfig = new WifiP2pConfig();
-                deviceConfig.deviceAddress = device.deviceAddress;
-                deviceConfig.wps.setup = WpsInfo.PBC;
-                players.add(new Player(device.deviceName));
+                if (gameHost) {
+                    WifiP2pDevice device = peers.get(position);
+                    WifiP2pConfig deviceConfig = new WifiP2pConfig();
+                    deviceConfig.deviceAddress = device.deviceAddress;
+                    deviceConfig.wps.setup = WpsInfo.PBC;
+                    deviceConfig.groupOwnerIntent = 15;
+                    players.add(new Player(device.deviceName));
 
-                mManager.connect(mChannel, deviceConfig, new WifiP2pManager.ActionListener() {
-                    @Override
-                    public void onSuccess() {
+                    mManager.connect(mChannel, deviceConfig, new WifiP2pManager.ActionListener() {
+                        @Override
+                        public void onSuccess() {
+                            // Broadcast receiver will handle this
+                        }
 
-                    }
-
-                    @Override
-                    public void onFailure(int reason) {
-                        Toast.makeText(MultiPlayerLobbyActivity.this, "Connect failed, please retry", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(int reason) {
+                            Toast.makeText(MultiPlayerLobbyActivity.this, "Connect failed, please retry", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
 
@@ -156,8 +159,13 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
             startGameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mReceiver.sendMessage("startGame");
-                    initializeMultiplayer();
+                    Random r = new Random();
+                    seed = r.nextInt(1000) + 1;
+                    SharedPreferences prefs = getSharedPreferences(MainActivity.GAME_PREFS, Context.MODE_PRIVATE);
+                    int cardNum = prefs.getInt("card_number", 16);
+                    String difficulty = prefs.getString("difficulty", "easy");
+                    mReceiver.sendMessage("startGame|" + seed + "|" + cardNum + "|" + difficulty);
+                    initializeMultiplayer(cardNum, difficulty);
                 }
             });
         }
@@ -196,24 +204,26 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
         this.wifiP2pEnabled = wifiP2Penabled;
     }
 
-    public void initializeMultiplayer() {
+    public void initializeMultiplayer(int cardNum, String difficulty) {
         // TODO: initialize multi player game
-        SharedPreferences prefs = getSharedPreferences(MainActivity.GAME_PREFS, Context.MODE_PRIVATE);
         Intent gameIntent = new Intent(this, MultiPlayerActivity.class);
         gameIntent
-                .putExtra("cardNum", prefs.getInt("card_number", 16))
-                .putExtra("difficulty", prefs.getString("difficulty", "easy"));
-
-        if (gameHost) gameIntent.putExtra("seed", seed);
+                .putExtra("cardNum", cardNum)
+                .putExtra("difficulty", difficulty)
+                .putExtra("seed", seed);
 
         startActivity(gameIntent);
     }
 
     public void handleMessage(String msg) {
         // TODO: handle received message
-        if (msg.equals("startGame")) {
-            initializeMultiplayer();
+        String[] parts = msg.split("\\|");
+        // start game message format -> startGame|seed|numCards|difficulty
+        if (parts[0].equals("startGame")) {
+            seed = Integer.parseInt(parts[1]);
+            int cardNum = Integer.parseInt(parts[2]);
+            String difficulty = parts[3];
+            initializeMultiplayer(cardNum, difficulty);
         }
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

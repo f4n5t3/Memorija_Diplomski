@@ -1,8 +1,8 @@
 package ss090310.etf.ac.bg.rs.memorija_diplomski;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +25,6 @@ class GameAsyncTask extends AsyncTask<Void, String, Void> {
     private static final int SOCKET_NUM = 8888;
     private static final int TIME_OUT = 500;
 
-    private Context mContext;
     private InetAddress serverAddress;
     private boolean isServer = false;
     private MultiPlayerLobbyActivity mActivity;
@@ -35,18 +34,18 @@ class GameAsyncTask extends AsyncTask<Void, String, Void> {
 
 
     GameAsyncTask(MultiPlayerLobbyActivity activity) {
-        mContext = activity.getApplicationContext();
         mActivity = activity;
         isServer = true;
         Log.d(TAG, "GameAsyncTask: Game created on server side.");
+        Toast.makeText(mActivity, "Game created on server side", Toast.LENGTH_SHORT).show();
     }
 
     GameAsyncTask(MultiPlayerLobbyActivity activity, InetAddress serverAddress) {
-        mContext = activity.getApplicationContext();
         mActivity = activity;
         isServer = false;
         this.serverAddress = serverAddress;
         Log.d(TAG, "GameAsyncTask: Game created on client side.");
+        Toast.makeText(activity, "Game created on client side", Toast.LENGTH_SHORT).show();
     }
 
     @Override

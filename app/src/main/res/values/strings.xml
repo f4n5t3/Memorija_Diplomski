@@ -44,5 +44,11 @@
     <string name="ok_label">OK</string>
     <string name="label_play_locally">Play on this device</string>
     <string name="attempts_label">Attempts:</string>
+    <string name="player2_username">Player 2 username</string>
+    <string name="final_score_label">Final Score</string>
+    <string name="back_to_main_menu_label">Back to main menu</string>
+    <string name="congratulations_label">Congratulations!</string>
+    <string name="your_score_label">Your score:</string>
+    <string name="top_10_high_scores_label">Top 10 high scores:</string>
 
 </resources>

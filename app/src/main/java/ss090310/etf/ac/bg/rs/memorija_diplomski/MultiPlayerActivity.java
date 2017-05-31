@@ -26,7 +26,7 @@ public class MultiPlayerActivity extends AppCompatActivity {
         String difficulty = intent.getStringExtra("difficulty");
         seed = intent.getIntExtra("seed", 16);
 
-        mAdapter = new GameGridAdapter(this, numCards, difficulty, true);
+        mAdapter = new GameGridAdapter(this, numCards, difficulty, seed);
 
         GridView gameGrid = (GridView) findViewById(R.id.multiplayer_grid);
         gameGrid.setNumColumns(4);

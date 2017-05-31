@@ -25,6 +25,7 @@
         <activity android:name=".EndGameActivity" />
         <activity android:name=".SelectMultiplayerActivity" />
         <activity android:name=".MultiPlayerActivity" />
+        <activity android:name=".MultiplayerResultsActivity"></activity>
     </application>
 
 </manifest>
