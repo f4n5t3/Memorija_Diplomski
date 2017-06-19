@@ -13,19 +13,19 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SinglePlayerActivity" />
-        <activity android:name=".MultiPlayerLobbyActivity" />
-        <activity android:name=".EndGameActivity" />
-        <activity android:name=".SelectMultiplayerActivity" />
-        <activity android:name=".MultiPlayerActivity" />
-        <activity android:name=".MultiplayerResultsActivity"></activity>
+        <activity android:name=".activities.SinglePlayerActivity" />
+        <activity android:name=".activities.MultiPlayerLobbyActivity" />
+        <activity android:name=".activities.EndGameActivity" />
+        <activity android:name=".activities.SelectMultiplayerActivity" />
+        <activity android:name=".activities.MultiPlayerActivity" />
+        <activity android:name=".activities.MultiplayerResultsActivity"></activity>
     </application>
 
 </manifest>

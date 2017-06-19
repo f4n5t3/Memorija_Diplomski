@@ -1,4 +1,4 @@
-package ss090310.etf.ac.bg.rs.memorija_diplomski;
+package ss090310.etf.ac.bg.rs.memorija_diplomski.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,11 +16,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import ss090310.etf.ac.bg.rs.memorija_diplomski.R;
+import ss090310.etf.ac.bg.rs.memorija_diplomski.activities.EndGameActivity;
+import ss090310.etf.ac.bg.rs.memorija_diplomski.activities.MultiplayerResultsActivity;
+
 /**
  * Created by Stefan on 23/04/2017.
  */
 
-class GameGridAdapter extends BaseAdapter {
+public class GameGridAdapter extends BaseAdapter {
 
     private static final int CARD_FLIP_TIME = 500;
 
@@ -39,7 +43,7 @@ class GameGridAdapter extends BaseAdapter {
     private int turn;
     private String player1, player2;
 
-    GameGridAdapter(Context context, int cardNum, String difficulty, boolean isMultiplayer) {
+    public GameGridAdapter(Context context, int cardNum, String difficulty, boolean isMultiplayer) {
         this.mContext = context;
         this.cardNum = cardNum;
         this.backImage = R.drawable.back_image;
@@ -62,7 +66,7 @@ class GameGridAdapter extends BaseAdapter {
         loadCards(difficulty, cardNum);
     }
 
-    GameGridAdapter(Context context, int cardNum, String difficulty, int seed) {
+    public GameGridAdapter(Context context, int cardNum, String difficulty, int seed) {
         this.mContext = context;
         this.cardNum = cardNum;
         this.backImage = R.drawable.back_image;
@@ -143,7 +147,7 @@ class GameGridAdapter extends BaseAdapter {
         return new GridView.LayoutParams(cardWidth, cardHeight);
     }
 
-    void flip(final int i) {
+    public void flip(final int i) {
         if (!flipped[i] && !matched[i] && !busy) {
             if (flippedCard == -1) {
                 // No cards are flipped, so flip the clicked one
@@ -214,13 +218,13 @@ class GameGridAdapter extends BaseAdapter {
 
     int getP2AttemptsNum() { return p2AttemptsNum; }
 
-    int getP1MatchedNum() { return p1MatchedNum; }
+    public int getP1MatchedNum() { return p1MatchedNum; }
 
-    int getP2MatchedNum() { return p2MatchedNum; }
+    public int getP2MatchedNum() { return p2MatchedNum; }
 
-    int getTurn() { return turn; }
+    public int getTurn() { return turn; }
 
-    void setPlayer1(String p1) { player1 = p1; }
+    public void setPlayer1(String p1) { player1 = p1; }
 
-    void setPlayer2(String p2) { player2 = p2; }
+    public void setPlayer2(String p2) { player2 = p2; }
 }

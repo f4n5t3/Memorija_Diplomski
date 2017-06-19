@@ -1,4 +1,4 @@
-package ss090310.etf.ac.bg.rs.memorija_diplomski;
+package ss090310.etf.ac.bg.rs.memorija_diplomski.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,12 +10,16 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import ss090310.etf.ac.bg.rs.memorija_diplomski.adapters.GameGridAdapter;
+import ss090310.etf.ac.bg.rs.memorija_diplomski.utils.Player;
+import ss090310.etf.ac.bg.rs.memorija_diplomski.R;
+
 public class SinglePlayerActivity extends AppCompatActivity {
 
-    GameGridAdapter mGridAdapter;
+    private GameGridAdapter mGridAdapter;
     private int turn; // 1 - player1, 2 - player2
     private int scores[] = new int[2];
-    Player player1, player2;
+    private Player player1, player2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class SinglePlayerActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mGridAdapter.flip(position);
+                // TODO: change so result is updated real-time (when there is a match), not when user flips the next card
                 player1Score.setText(mGridAdapter.getP1MatchedNum() + "");
                 if (isMultiplayer) {
                     player2Score.setText(mGridAdapter.getP2MatchedNum() + "");

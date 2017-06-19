@@ -1,4 +1,4 @@
-package ss090310.etf.ac.bg.rs.memorija_diplomski;
+package ss090310.etf.ac.bg.rs.memorija_diplomski.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +26,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+
+import ss090310.etf.ac.bg.rs.memorija_diplomski.utils.Player;
+import ss090310.etf.ac.bg.rs.memorija_diplomski.R;
+import ss090310.etf.ac.bg.rs.memorija_diplomski.utils.WifiP2PBroadcastReceiver;
+import ss090310.etf.ac.bg.rs.memorija_diplomski.adapters.WifiPeerListAdapter;
 
 public class MultiPlayerLobbyActivity extends AppCompatActivity {
 
@@ -164,7 +169,6 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
                     SharedPreferences prefs = getSharedPreferences(MainActivity.GAME_PREFS, Context.MODE_PRIVATE);
                     int cardNum = prefs.getInt("card_number", 16);
                     String difficulty = prefs.getString("difficulty", "easy");
-                    mReceiver.sendMessage("startGame|" + seed + "|" + cardNum + "|" + difficulty);
                     initializeMultiplayer(cardNum, difficulty);
                 }
             });
@@ -210,7 +214,8 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
         gameIntent
                 .putExtra("cardNum", cardNum)
                 .putExtra("difficulty", difficulty)
-                .putExtra("seed", seed);
+                .putExtra("seed", seed)
+                .putExtra("host", gameHost);
 
         startActivity(gameIntent);
     }

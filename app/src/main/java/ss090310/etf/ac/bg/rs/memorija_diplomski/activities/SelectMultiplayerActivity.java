@@ -1,4 +1,4 @@
-package ss090310.etf.ac.bg.rs.memorija_diplomski;
+package ss090310.etf.ac.bg.rs.memorija_diplomski.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import ss090310.etf.ac.bg.rs.memorija_diplomski.R;
 
 public class SelectMultiplayerActivity extends AppCompatActivity {
 

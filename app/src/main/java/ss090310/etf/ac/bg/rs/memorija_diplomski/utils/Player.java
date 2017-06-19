@@ -1,15 +1,15 @@
-package ss090310.etf.ac.bg.rs.memorija_diplomski;
+package ss090310.etf.ac.bg.rs.memorija_diplomski.utils;
 
 /**
  * Created by Stefan on 18/05/2017.
  */
 
-class Player {
+public class Player {
 
     private String name;
     private int score;
 
-    Player(String name) {
+    public Player(String name) {
         this.name = name;
         score = 0;
     }

@@ -1,4 +1,4 @@
-package ss090310.etf.ac.bg.rs.memorija_diplomski;
+package ss090310.etf.ac.bg.rs.memorija_diplomski.utils;
 
 import android.support.annotation.NonNull;
 
@@ -6,11 +6,11 @@ import android.support.annotation.NonNull;
  * Created by Stefan on 10/05/2017.
  */
 
-class ScoreEntry implements Comparable<ScoreEntry> {
+public class ScoreEntry implements Comparable<ScoreEntry> {
     private int score;
     private String username;
 
-    ScoreEntry(String username, int score) {
+    public ScoreEntry(String username, int score) {
         this.username = username;
         this.score = score;
     }

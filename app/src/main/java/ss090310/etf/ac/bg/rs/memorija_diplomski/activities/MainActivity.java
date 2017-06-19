@@ -1,4 +1,4 @@
-package ss090310.etf.ac.bg.rs.memorija_diplomski;
+package ss090310.etf.ac.bg.rs.memorija_diplomski.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.List;
+
+import ss090310.etf.ac.bg.rs.memorija_diplomski.R;
 
 public class MainActivity extends AppCompatActivity {
 

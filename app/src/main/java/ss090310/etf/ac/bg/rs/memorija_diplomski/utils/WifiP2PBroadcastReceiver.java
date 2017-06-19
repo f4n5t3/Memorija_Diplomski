@@ -1,4 +1,4 @@
-package ss090310.etf.ac.bg.rs.memorija_diplomski;
+package ss090310.etf.ac.bg.rs.memorija_diplomski.utils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,11 +8,14 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
 
+import ss090310.etf.ac.bg.rs.memorija_diplomski.activities.MultiPlayerLobbyActivity;
+import ss090310.etf.ac.bg.rs.memorija_diplomski.multiplayer.ServerConnectionThread;
+
 /**
  * Created by Stefan on 16/05/2017.
  */
 
-public class WifiP2PBroadcastReceiver extends BroadcastReceiver implements WifiP2pManager.ConnectionInfoListener{
+public class WifiP2PBroadcastReceiver extends BroadcastReceiver implements WifiP2pManager.ConnectionInfoListener {
     
     private static final String TAG = "WifiP2PBroadcastReceive";
 
@@ -21,11 +24,10 @@ public class WifiP2PBroadcastReceiver extends BroadcastReceiver implements WifiP
     private MultiPlayerLobbyActivity mActivity;
     private WifiP2pManager.PeerListListener mListener;
 
-    GameAsyncTask gameAsyncTask;
-
     public WifiP2PBroadcastReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, MultiPlayerLobbyActivity activity, WifiP2pManager.PeerListListener listener) {
         super();
         mManager = manager;
+
         mChannel = channel;
         mActivity = activity;
         mListener = listener;
@@ -77,18 +79,15 @@ public class WifiP2PBroadcastReceiver extends BroadcastReceiver implements WifiP
         if (info.groupFormed) {
             if (info.isGroupOwner) {
                 // Server device - game host
-                gameAsyncTask = new GameAsyncTask(mActivity);
+                // TODO: start server connection thread (& check player number?)
+                ServerConnectionThread serverConnectionThread = new ServerConnectionThread();
+                (new Thread(serverConnectionThread)).start();
             } else {
                 // Client device
-                gameAsyncTask = new GameAsyncTask(mActivity, info.groupOwnerAddress);
+                // TODO: start client connection thread
             }
 
-            gameAsyncTask.execute();
-            // initialize the game
         }
     }
 
-    public void sendMessage(String message) {
-        gameAsyncTask.sendMessage(message);
-    }
 }

@@ -1,4 +1,4 @@
-package ss090310.etf.ac.bg.rs.memorija_diplomski;
+package ss090310.etf.ac.bg.rs.memorija_diplomski.adapters;
 
 import android.content.Context;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -11,16 +11,18 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import ss090310.etf.ac.bg.rs.memorija_diplomski.R;
+
 /**
  * Created by Stefan on 15/05/2017.
  */
 
-class WifiPeerListAdapter extends ArrayAdapter<WifiP2pDevice> {
+public class WifiPeerListAdapter extends ArrayAdapter<WifiP2pDevice> {
 
     private List<WifiP2pDevice> devices;
     private Context mContext;
 
-    WifiPeerListAdapter(Context context, int resourceId, List<WifiP2pDevice> devices) {
+    public WifiPeerListAdapter(Context context, int resourceId, List<WifiP2pDevice> devices) {
         super(context, resourceId, devices);
         this.devices = devices;
         mContext = context;

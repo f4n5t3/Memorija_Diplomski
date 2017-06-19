@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ss090310.etf.ac.bg.rs.memorija_diplomski.EndGameActivity">
+    tools:context="ss090310.etf.ac.bg.rs.memorija_diplomski.activities.EndGameActivity">
 
     <TextView
         android:id="@+id/textView5"
