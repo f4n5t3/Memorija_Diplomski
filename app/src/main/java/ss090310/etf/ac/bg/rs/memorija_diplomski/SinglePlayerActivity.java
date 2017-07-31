@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +18,7 @@ public class SinglePlayerActivity extends AppCompatActivity {
     private int turn; // 1 - player1, 2 - player2
     private int scores[] = new int[2];
     Player player1, player2;
+    public static Handler resultHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +61,10 @@ public class SinglePlayerActivity extends AppCompatActivity {
         GridView gameGrid = (GridView) findViewById(R.id.game_grid_view);
         gameGrid.setNumColumns(4);
 
-        gameGrid.setAdapter(mGridAdapter);
-
-        gameGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+        resultHandler = new Handler() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mGridAdapter.flip(position);
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
                 player1Score.setText(mGridAdapter.getP1MatchedNum() + "");
                 if (isMultiplayer) {
                     player2Score.setText(mGridAdapter.getP2MatchedNum() + "");
@@ -77,6 +77,17 @@ public class SinglePlayerActivity extends AppCompatActivity {
                         player2NameLabel.setTypeface(null, Typeface.BOLD_ITALIC);
                     }
                 }
+            }
+        };
+
+        gameGrid.setAdapter(mGridAdapter);
+
+        gameGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mGridAdapter.flip(position);
+
             }
         });
 

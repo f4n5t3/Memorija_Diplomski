@@ -21,7 +21,7 @@ public class WifiP2PBroadcastReceiver extends BroadcastReceiver implements WifiP
     private MultiPlayerLobbyActivity mActivity;
     private WifiP2pManager.PeerListListener mListener;
 
-    GameAsyncTask gameAsyncTask;
+    public static StartGameAsyncTask startGameAsyncTask;
 
     public WifiP2PBroadcastReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, MultiPlayerLobbyActivity activity, WifiP2pManager.PeerListListener listener) {
         super();
@@ -77,18 +77,21 @@ public class WifiP2PBroadcastReceiver extends BroadcastReceiver implements WifiP
         if (info.groupFormed) {
             if (info.isGroupOwner) {
                 // Server device - game host
-                gameAsyncTask = new GameAsyncTask(mActivity);
+                startGameAsyncTask = new StartGameAsyncTask(mActivity);
             } else {
                 // Client device
-                gameAsyncTask = new GameAsyncTask(mActivity, info.groupOwnerAddress);
+                startGameAsyncTask = new StartGameAsyncTask(mActivity, info.groupOwnerAddress);
             }
 
-            gameAsyncTask.execute();
-            // initialize the game
+            startGameAsyncTask.execute();
         }
     }
 
     public void sendMessage(String message) {
-        gameAsyncTask.sendMessage(message);
+        startGameAsyncTask.sendMessage(message);
+    }
+
+    public void cancelConnection() {
+        startGameAsyncTask.sendMessage("cancel");
     }
 }

@@ -3,6 +3,7 @@ package ss090310.etf.ac.bg.rs.memorija_diplomski;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -153,7 +154,7 @@ class GameGridAdapter extends BaseAdapter {
             } else {
                 // One card is flipped, flip the second one
                 flipped[i] = true;
-                if (localMultiplayer && turn == 2) {
+                if ((localMultiplayer || lanMultiplayer) && turn == 2) {
                     p2AttemptsNum++;
                 }
                 else {
@@ -169,8 +170,12 @@ class GameGridAdapter extends BaseAdapter {
                         if (cardFronts.get(flippedCard).equals(cardFronts.get(i))) {
                             matched[flippedCard] = true;
                             matched[i] = true;
-                            if (localMultiplayer && turn == 2) p2MatchedNum++;
-                            else p1MatchedNum++;
+                            if ((localMultiplayer || lanMultiplayer) && turn == 2) {
+                                p2MatchedNum++;
+                            }
+                            else {
+                                p1MatchedNum++;
+                            }
                             Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
                             v.vibrate(250);
                         }
@@ -180,11 +185,25 @@ class GameGridAdapter extends BaseAdapter {
                             if (turn == 1) turn = 2;
                             else turn = 1;
                         }
+                        String message = "";
+                        if (lanMultiplayer) {
+                            Message msg = Message.obtain();
+                            msg.obj = message;
+                            if (MultiPlayerActivity.resultHandler != null)
+                                msg.setTarget(MultiPlayerActivity.resultHandler);
+                            msg.sendToTarget();
+                        } else {
+                            Message msg = Message.obtain();
+                            msg.obj = message;
+                            if (SinglePlayerActivity.resultHandler != null)
+                                msg.setTarget(SinglePlayerActivity.resultHandler);
+                            msg.sendToTarget();
+                        }
                         flippedCard = -1;
                         busy = false;
                         notifyDataSetChanged();
                         if ((p1MatchedNum + p2MatchedNum) == cardNum / 2) {
-                            if (!localMultiplayer) {
+                            if (!localMultiplayer && !lanMultiplayer) {
                                 Intent endGameIntent = new Intent(mContext, EndGameActivity.class);
                                 endGameIntent.putExtra("score", calculateScore());
                                 mContext.startActivity(endGameIntent);

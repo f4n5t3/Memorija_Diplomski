@@ -45,6 +45,7 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
     List<Player> players;
     int playerNum;
     int seed;
+    String hostUsername;
 
     private WifiP2pManager.PeerListListener peerListListener = new WifiP2pManager.PeerListListener() {
         @Override
@@ -134,7 +135,7 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
                     WifiP2pConfig deviceConfig = new WifiP2pConfig();
                     deviceConfig.deviceAddress = device.deviceAddress;
                     deviceConfig.wps.setup = WpsInfo.PBC;
-                    deviceConfig.groupOwnerIntent = 15;
+                    deviceConfig.groupOwnerIntent = 0;
                     players.add(new Player(device.deviceName));
 
                     mManager.connect(mChannel, deviceConfig, new WifiP2pManager.ActionListener() {
@@ -205,18 +206,20 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
     }
 
     public void initializeMultiplayer(int cardNum, String difficulty) {
-        // TODO: initialize multi player game
+        // TODO: initialize multiplayer game
         Intent gameIntent = new Intent(this, MultiPlayerActivity.class);
         gameIntent
                 .putExtra("cardNum", cardNum)
                 .putExtra("difficulty", difficulty)
-                .putExtra("seed", seed);
+                .putExtra("seed", seed)
+                .putExtra("host", gameHost);
+
+        if (!gameHost) gameIntent.putExtra("hostUsername", hostUsername);
 
         startActivity(gameIntent);
     }
 
     public void handleMessage(String msg) {
-        // TODO: handle received message
         String[] parts = msg.split("\\|");
         // start game message format -> startGame|seed|numCards|difficulty
         if (parts[0].equals("startGame")) {
@@ -224,6 +227,8 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
             int cardNum = Integer.parseInt(parts[2]);
             String difficulty = parts[3];
             initializeMultiplayer(cardNum, difficulty);
+        } else if (parts[0].equals("username")) {
+            hostUsername = parts[1];
         }
     }
 }

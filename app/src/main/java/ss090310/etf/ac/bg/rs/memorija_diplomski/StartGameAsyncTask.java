@@ -1,5 +1,6 @@
 package ss090310.etf.ac.bg.rs.memorija_diplomski;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -13,39 +14,48 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import static android.content.ContentValues.TAG;
+import java.util.HashMap;
 
 /**
  * Created by Stefan on 18/05/2017.
  */
 
-class GameAsyncTask extends AsyncTask<Void, String, Void> {
+class StartGameAsyncTask extends AsyncTask<Void, String, Void> {
 
+    private static final String TAG = "StartGameAsyncTask";
     private static final int SOCKET_NUM = 8888;
-    private static final int TIME_OUT = 500;
+    private static final int TIME_OUT = 0;
 
     private InetAddress serverAddress;
     private boolean isServer = false;
-    private MultiPlayerLobbyActivity mActivity;
+    private MultiPlayerLobbyActivity lobbyActivity;
+    private GameGridAdapter gameGridAdapter;
 
-    private PrintWriter writer;
-    private BufferedReader reader;
+    public static PrintWriter writer;
+    private static BufferedReader reader;
 
+    public static HashMap<Socket, String> players;
+    public static Socket clientSocket;
 
-    GameAsyncTask(MultiPlayerLobbyActivity activity) {
-        mActivity = activity;
+    StartGameAsyncTask(MultiPlayerLobbyActivity activity) {
+        lobbyActivity = activity;
         isServer = true;
-        Log.d(TAG, "GameAsyncTask: Game created on server side.");
-        Toast.makeText(mActivity, "Game created on server side", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "StartGameAsyncTask: Game created on server side.");
+        Toast.makeText(lobbyActivity, "Server ready", Toast.LENGTH_SHORT).show();
+        players = new HashMap<>();
     }
 
-    GameAsyncTask(MultiPlayerLobbyActivity activity, InetAddress serverAddress) {
-        mActivity = activity;
+    StartGameAsyncTask(MultiPlayerLobbyActivity activity, InetAddress serverAddress) {
+        lobbyActivity = activity;
         isServer = false;
         this.serverAddress = serverAddress;
-        Log.d(TAG, "GameAsyncTask: Game created on client side.");
-        Toast.makeText(activity, "Game created on client side", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "StartGameAsyncTask: Game created on client side.");
+        Toast.makeText(activity, "Client ready", Toast.LENGTH_SHORT).show();
+        players = null;
+    }
+
+    public void setGameGridAdapter(GameGridAdapter adapter) {
+        gameGridAdapter = adapter;
     }
 
     @Override
@@ -56,17 +66,27 @@ class GameAsyncTask extends AsyncTask<Void, String, Void> {
             ServerSocket serverSocket = null;
             try {
                 serverSocket = new ServerSocket(SOCKET_NUM);
+                clientSocket = serverSocket.accept();
+                Log.d(TAG, "doInBackground: Client connected.");
+                // client username
+                reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                writer = new PrintWriter(clientSocket.getOutputStream(), true);
+                msg = reader.readLine();
+                if (msg != null) {
+                    players.put(clientSocket, msg.trim());
+                }
+                // send host username
+                String username = lobbyActivity.getSharedPreferences(MainActivity.GAME_PREFS, Context.MODE_PRIVATE).getString("username", "");
+                sendMessage("username|" + username);
                 while (true) {
-                    Socket clientSocket = serverSocket.accept();
-                    Log.d(TAG, "doInBackground: Client connected.");
                     // Client has connected to the socket and transferred data
                     InputStream inputStream = clientSocket.getInputStream();
                     reader = new BufferedReader(new InputStreamReader(inputStream));
                     writer = new PrintWriter(clientSocket.getOutputStream(), true);
-                    Log.d(TAG, "Server created on: " + SOCKET_NUM);
 
-                    while ((msg = reader.readLine()) != null) {
-                        Log.d(TAG, "Received message: " + msg);
+                    while (true) {
+                        msg = reader.readLine();
+                        if (msg.equals("cancel")) break;
                         publishProgress(msg);
                     }
                 }
@@ -82,16 +102,20 @@ class GameAsyncTask extends AsyncTask<Void, String, Void> {
                 }
             }
         } else {
-            // Clients code - joined game
-            Socket clientSocket = new Socket();
+            // Client code - joined game
+            clientSocket = new Socket();
             try {
                 clientSocket.bind(null);
                 clientSocket.connect(new InetSocketAddress(serverAddress, SOCKET_NUM), TIME_OUT);
                 Log.d(TAG, "Connected to " + serverAddress + " on port " + SOCKET_NUM);
+                // send username
+                writer = new PrintWriter((clientSocket.getOutputStream()), true);
+                String username = lobbyActivity.getSharedPreferences(MainActivity.GAME_PREFS, Context.MODE_PRIVATE).getString("username", "");
+                sendMessage(username);
                 while(true) {
                     InputStream inputStream = clientSocket.getInputStream();
                     reader = new BufferedReader(new InputStreamReader(inputStream));
-                    writer = new PrintWriter(clientSocket.getOutputStream(), true);
+                    writer = new PrintWriter((clientSocket.getOutputStream()), true);
 
                     while (true) {
                         msg = reader.readLine();
@@ -117,14 +141,19 @@ class GameAsyncTask extends AsyncTask<Void, String, Void> {
     }
 
     void sendMessage(String message) {
-        new Thread(new MessageSender(message)).start();
+        new Thread(new MessageSender(message, writer)).start();
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
         Log.d(TAG, "onProgressUpdate: sending message " + values[0] + " to MultiPlayerLobbyActivity.");
-        mActivity.handleMessage(values[0]);
+        if (values[0].startsWith("flip") && gameGridAdapter != null) {
+            String[] parts = values[0].split("\\|");
+            int toFlip = Integer.parseInt(parts[1]);
+            gameGridAdapter.flip(toFlip);
+        } else if (lobbyActivity != null)
+            lobbyActivity.handleMessage(values[0]);
     }
 
     @Override
@@ -137,22 +166,5 @@ class GameAsyncTask extends AsyncTask<Void, String, Void> {
         super.onPreExecute();
     }
 
-    private class MessageSender implements Runnable {
-
-        String message;
-
-        MessageSender(String message) {
-            this.message = message;
-        }
-
-        @Override
-        public void run() {
-            if (writer != null) {
-                writer.println(message);
-            } else {
-                Log.d(TAG, "run: Error - writer null!");
-            }
-        }
-    }
 }
 
