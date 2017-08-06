@@ -15,8 +15,6 @@ import android.widget.TextView;
 public class SinglePlayerActivity extends AppCompatActivity {
 
     GameGridAdapter mGridAdapter;
-    private int turn; // 1 - player1, 2 - player2
-    private int scores[] = new int[2];
     Player player1, player2;
     public static Handler resultHandler;
 
@@ -87,10 +85,8 @@ public class SinglePlayerActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mGridAdapter.flip(position);
-
             }
         });
-
     }
 
 }

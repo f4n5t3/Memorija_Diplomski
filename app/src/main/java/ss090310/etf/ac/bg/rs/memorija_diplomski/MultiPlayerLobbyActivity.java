@@ -127,6 +127,22 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
         wifiPeerListAdapter = new WifiPeerListAdapter(this, R.layout.device_list_item, peers);
         deviceListView.setAdapter(wifiPeerListAdapter);
 
+        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        mChannel = mManager.initialize(this, getMainLooper(), null);
+        mReceiver = new WifiP2PBroadcastReceiver(mManager, mChannel, this, peerListListener);
+
+        mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure(int reason) {
+
+            }
+        });
+
         deviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -135,7 +151,7 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
                     WifiP2pConfig deviceConfig = new WifiP2pConfig();
                     deviceConfig.deviceAddress = device.deviceAddress;
                     deviceConfig.wps.setup = WpsInfo.PBC;
-                    deviceConfig.groupOwnerIntent = 0;
+                    deviceConfig.groupOwnerIntent = 15;
                     players.add(new Player(device.deviceName));
 
                     mManager.connect(mChannel, deviceConfig, new WifiP2pManager.ActionListener() {
@@ -170,22 +186,6 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
                 }
             });
         }
-
-        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        mChannel = mManager.initialize(this, getMainLooper(), null);
-        mReceiver = new WifiP2PBroadcastReceiver(mManager, mChannel, this, peerListListener);
-
-        mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onFailure(int reason) {
-
-            }
-        });
     }
 
     @Override

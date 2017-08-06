@@ -86,10 +86,23 @@ class GameGridAdapter extends BaseAdapter {
     }
 
     private void loadCards(String difficulty, int cardNum) {
+        ArrayList<Integer> picked = new ArrayList<>();
         cardFronts = new ArrayList<>();
-        for (int i = 0; i < cardNum/2; i++) {
-            cardFronts.add(mContext.getResources().getIdentifier(difficulty.toLowerCase() + "_" + i, "drawable", mContext.getPackageName()));
-            cardFronts.add(mContext.getResources().getIdentifier(difficulty.toLowerCase() + "_" + i, "drawable", mContext.getPackageName()));
+        int i = 0;
+        Random rnd;
+        if (lanMultiplayer) {
+            rnd = new Random(seed);
+        } else {
+            rnd = new Random();
+        }
+        while (i < cardNum/2) {
+            int rand = rnd.nextInt(32);
+            if (!picked.contains(rand)) {
+                cardFronts.add(mContext.getResources().getIdentifier(difficulty.toLowerCase() + "_" + rand, "drawable", mContext.getPackageName()));
+                cardFronts.add(mContext.getResources().getIdentifier(difficulty.toLowerCase() + "_" + rand, "drawable", mContext.getPackageName()));
+                picked.add(rand);
+                i++;
+            }
         }
         if (lanMultiplayer) {
             Random r = new Random(seed);
