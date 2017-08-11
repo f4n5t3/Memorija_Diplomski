@@ -42,10 +42,8 @@ public class WifiP2PBroadcastReceiver extends BroadcastReceiver implements WifiP
                 int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
                 if (state == WifiP2pManager.WIFI_P2P_STATE_DISABLED) {
                     // set flag in activity to false
-                    mActivity.setWifiP2pEnabled(false);
                 } else {
                     // set flag in activity to true
-                    mActivity.setWifiP2pEnabled(true);
                 }
                 break;
             case WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION:
@@ -90,8 +88,19 @@ public class WifiP2PBroadcastReceiver extends BroadcastReceiver implements WifiP
     public void sendMessage(String message) {
         startGameAsyncTask.sendMessage(message);
     }
+    
+    public void disconnect() {
+        mManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "Group removed!");
+            }
 
-    public void cancelConnection() {
-        startGameAsyncTask.sendMessage("cancel");
+            @Override
+            public void onFailure(int reason) {
+                Log.d(TAG, "Failed to remove group, reason: " + reason);
+            }
+        });
     }
+
 }

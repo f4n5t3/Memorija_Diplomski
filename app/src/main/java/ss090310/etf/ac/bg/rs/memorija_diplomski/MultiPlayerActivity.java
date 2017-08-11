@@ -78,7 +78,18 @@ public class MultiPlayerActivity extends AppCompatActivity {
         };
 
         GridView gameGrid = (GridView) findViewById(R.id.game_grid_view);
-        gameGrid.setNumColumns(4);
+        if (numCards <= 32)
+            gameGrid.setNumColumns(4);
+        else {
+            if (numCards%5 == 0)
+                gameGrid.setNumColumns(5);
+            else if (numCards%6 == 0)
+                gameGrid.setNumColumns(6);
+            else if (numCards%8 == 0)
+                gameGrid.setNumColumns(8);
+            else
+                gameGrid.setNumColumns(4);
+        }
 
         gameGrid.setAdapter(mAdapter);
         WifiP2PBroadcastReceiver.startGameAsyncTask.setGameGridAdapter(mAdapter);
@@ -98,4 +109,9 @@ public class MultiPlayerActivity extends AppCompatActivity {
         new Thread(new MessageSender(message, writer)).start();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        MultiPlayerLobbyActivity.mReceiver.disconnect();
+    }
 }

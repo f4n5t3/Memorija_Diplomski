@@ -15,7 +15,7 @@ import android.widget.TextView;
 public class SinglePlayerActivity extends AppCompatActivity {
 
     GameGridAdapter mGridAdapter;
-    Player player1, player2;
+    //Player player1, player2;
     public static Handler resultHandler;
 
     @Override
@@ -38,7 +38,7 @@ public class SinglePlayerActivity extends AppCompatActivity {
 
         player1NameLabel.setText(player1Name + ": ");
         player1Score.setText("0");
-        player1 = new Player(player1Name);
+        //player1 = new Player(player1Name);
 
         mGridAdapter = new GameGridAdapter(this, numCards, difficulty, isMultiplayer);
         mGridAdapter.setPlayer1(player1Name);
@@ -47,7 +47,7 @@ public class SinglePlayerActivity extends AppCompatActivity {
             player2Name = intent.getStringExtra("player2").trim();
             player2NameLabel.setText(player2Name + ": ");
             player2Score.setText("0");
-            player2 = new Player(player2Name);
+            //player2 = new Player(player2Name);
             player1NameLabel.setTypeface(null, Typeface.BOLD_ITALIC);
             player2NameLabel.setTypeface(null, Typeface.NORMAL);
             mGridAdapter.setPlayer2(player2Name);
@@ -57,7 +57,18 @@ public class SinglePlayerActivity extends AppCompatActivity {
         }
 
         GridView gameGrid = (GridView) findViewById(R.id.game_grid_view);
-        gameGrid.setNumColumns(4);
+        if (numCards <= 32)
+            gameGrid.setNumColumns(4);
+        else {
+            if (numCards%5 == 0)
+                gameGrid.setNumColumns(5);
+            else if (numCards%6 == 0)
+                gameGrid.setNumColumns(6);
+            else if (numCards%8 == 0)
+                gameGrid.setNumColumns(8);
+            else
+                gameGrid.setNumColumns(4);
+        }
 
         resultHandler = new Handler() {
             @Override

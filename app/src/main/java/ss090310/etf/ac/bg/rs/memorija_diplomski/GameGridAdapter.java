@@ -24,6 +24,9 @@ import java.util.Random;
 class GameGridAdapter extends BaseAdapter {
 
     private static final int CARD_FLIP_TIME = 500;
+    private static final int EASY_FACTOR = 1;
+    private static final int NORMAL_FACTOR = 2;
+    private static final int HARD_FACTOR = 3;
 
     private Context mContext;
     private int cardNum;
@@ -39,6 +42,7 @@ class GameGridAdapter extends BaseAdapter {
     private int seed;
     private int turn;
     private String player1, player2;
+    private int difficulty_factor;
 
     GameGridAdapter(Context context, int cardNum, String difficulty, boolean isMultiplayer) {
         this.mContext = context;
@@ -60,6 +64,12 @@ class GameGridAdapter extends BaseAdapter {
         }
         lanMultiplayer = false;
         turn = 1;
+        switch (difficulty) {
+            case "easy": difficulty_factor = EASY_FACTOR; break;
+            case "normal": difficulty_factor = NORMAL_FACTOR; break;
+            case "hard": difficulty_factor = HARD_FACTOR; break;
+            default: difficulty_factor = EASY_FACTOR;
+        }
         loadCards(difficulty, cardNum);
     }
 
@@ -82,6 +92,12 @@ class GameGridAdapter extends BaseAdapter {
         localMultiplayer = false;
         this.seed = seed;
         turn = 1;
+        switch (difficulty) {
+            case "easy": difficulty_factor = EASY_FACTOR; break;
+            case "normal": difficulty_factor = NORMAL_FACTOR; break;
+            case "hard": difficulty_factor = HARD_FACTOR; break;
+            default: difficulty_factor = EASY_FACTOR;
+        }
         loadCards(difficulty, cardNum);
     }
 
@@ -149,10 +165,33 @@ class GameGridAdapter extends BaseAdapter {
     }
 
     private GridView.LayoutParams getCardDimensions() {
+        int cardWidth, cardHeight;
+        int rowNum, colNum;
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
 
-        int cardWidth = Math.round(displayMetrics.widthPixels / 4);
-        int cardHeight = Math.round(displayMetrics.heightPixels / (cardNum / 3));
+        if (cardNum <= 32) {
+            colNum = 4;
+        }
+        else {
+            if (cardNum%5 == 0) {
+                colNum = 5;
+            }
+            else if (cardNum%6 == 0) {
+                colNum = 6;
+            }
+            else if (cardNum%8 == 0) {
+                colNum = 8;
+            }
+            else {
+                colNum = 4;
+            }
+        }
+
+        rowNum = cardNum / colNum;
+
+        cardWidth = Math.round(displayMetrics.widthPixels / colNum);
+        // fill up 5/6 of the screen
+        cardHeight = Math.round(displayMetrics.heightPixels * 5 / (rowNum * 6));
 
         return new GridView.LayoutParams(cardWidth, cardHeight);
     }
@@ -221,6 +260,7 @@ class GameGridAdapter extends BaseAdapter {
                                 endGameIntent.putExtra("score", calculateScore());
                                 mContext.startActivity(endGameIntent);
                             } else {
+                                MultiPlayerLobbyActivity.mReceiver.disconnect();
                                 Intent endGameIntent = new Intent(mContext, MultiplayerResultsActivity.class);
                                 endGameIntent.putExtra("player1", player1)
                                         .putExtra("player2", player2)
@@ -236,8 +276,8 @@ class GameGridAdapter extends BaseAdapter {
     }
 
     private int calculateScore() {
-        // TODO: Change scoring system
-        return cardNum * 10 - p1AttemptsNum;
+        int score = difficulty_factor * cardNum * 10 - p1AttemptsNum * 5;
+        return score < 0 ? 0 : score;
     }
 
     int getP1AttemptsNum() {

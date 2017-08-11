@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Random;
 
 public class MultiPlayerLobbyActivity extends AppCompatActivity {
@@ -34,7 +33,7 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
     WifiP2pManager mManager;
     WifiP2pManager.Channel mChannel;
     IntentFilter mIntentFilter;
-    WifiP2PBroadcastReceiver mReceiver;
+    public static WifiP2PBroadcastReceiver mReceiver;
 
     ArrayList<WifiP2pDevice> peers = new ArrayList<>();
     WifiPeerListAdapter wifiPeerListAdapter;
@@ -42,8 +41,6 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
     boolean wifiP2pEnabled = false;
     boolean gameHost = false;
 
-    List<Player> players;
-    int playerNum;
     int seed;
     String hostUsername;
 
@@ -72,8 +69,8 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
         // Determine if the view is inflated on the host device
         gameHost = getIntent().getBooleanExtra("host", false);
 
-        players = new ArrayList<>();
-        playerNum = 0;
+        //players = new ArrayList<>();
+        //playerNum = 0;
         
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -152,7 +149,6 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
                     deviceConfig.deviceAddress = device.deviceAddress;
                     deviceConfig.wps.setup = WpsInfo.PBC;
                     deviceConfig.groupOwnerIntent = 15;
-                    players.add(new Player(device.deviceName));
 
                     mManager.connect(mChannel, deviceConfig, new WifiP2pManager.ActionListener() {
                         @Override
@@ -173,6 +169,7 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
         if (!gameHost) {
             ((ViewManager) startGameButton.getParent()).removeView(startGameButton);
         } else {
+            startGameButton.setEnabled(false);
             startGameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -186,6 +183,7 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
                 }
             });
         }
+
     }
 
     @Override
@@ -229,6 +227,10 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
             initializeMultiplayer(cardNum, difficulty);
         } else if (parts[0].equals("username")) {
             hostUsername = parts[1];
+        } else if (parts[0].equals("ready")) {
+            Button startGameButton = (Button) findViewById(R.id.start_game_button);
+            startGameButton.setEnabled(true);
         }
     }
+
 }

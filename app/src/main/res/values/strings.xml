@@ -50,5 +50,7 @@
     <string name="congratulations_label">Congratulations!</string>
     <string name="your_score_label">Your score:</string>
     <string name="top_10_high_scores_label">Top 10 high scores:</string>
+    <string name="play_singleplayer">Play Singleplayer</string>
+    <string name="play_multiplayer">Play Multiplayer</string>
 
 </resources>

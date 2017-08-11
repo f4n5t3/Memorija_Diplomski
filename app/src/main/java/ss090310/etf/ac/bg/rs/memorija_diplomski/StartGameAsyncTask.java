@@ -78,6 +78,7 @@ class StartGameAsyncTask extends AsyncTask<Void, String, Void> {
                 // send host username
                 String username = lobbyActivity.getSharedPreferences(MainActivity.GAME_PREFS, Context.MODE_PRIVATE).getString("username", "");
                 sendMessage("username|" + username);
+                publishProgress("ready");
                 while (true) {
                     // Client has connected to the socket and transferred data
                     InputStream inputStream = clientSocket.getInputStream();
@@ -96,6 +97,7 @@ class StartGameAsyncTask extends AsyncTask<Void, String, Void> {
                 if (serverSocket != null) {
                     try {
                         serverSocket.close();
+                        Log.d(TAG, "Server socket closed");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -119,7 +121,7 @@ class StartGameAsyncTask extends AsyncTask<Void, String, Void> {
 
                     while (true) {
                         msg = reader.readLine();
-                        if (msg == null || isCancelled()) break;
+                        if (msg == null || isCancelled() || msg.equals("cancel")) break;
                         Log.d(TAG, "Read message : " + msg);
                         publishProgress(msg);
                     }
@@ -130,6 +132,7 @@ class StartGameAsyncTask extends AsyncTask<Void, String, Void> {
                 if (clientSocket.isConnected()) {
                     try {
                         clientSocket.close();
+                        Log.d(TAG, "Client socket closed");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -159,6 +162,7 @@ class StartGameAsyncTask extends AsyncTask<Void, String, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        MultiPlayerLobbyActivity.mReceiver.disconnect();
     }
 
     @Override
