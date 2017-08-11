@@ -14,7 +14,8 @@ public class MultiplayerResultsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiplayer_results);
 
-        WifiP2PBroadcastReceiver.startGameAsyncTask.sendMessage("cancel");
+        if (WifiP2PBroadcastReceiver.startGameAsyncTask != null)
+            WifiP2PBroadcastReceiver.startGameAsyncTask.sendMessage("cancel");
 
         Intent intent = getIntent();
         String player1 = intent.getStringExtra("player1");

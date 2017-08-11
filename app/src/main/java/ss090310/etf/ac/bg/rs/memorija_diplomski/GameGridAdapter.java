@@ -260,7 +260,8 @@ class GameGridAdapter extends BaseAdapter {
                                 endGameIntent.putExtra("score", calculateScore());
                                 mContext.startActivity(endGameIntent);
                             } else {
-                                MultiPlayerLobbyActivity.mReceiver.disconnect();
+                                if (lanMultiplayer)
+                                    MultiPlayerLobbyActivity.mReceiver.disconnect();
                                 Intent endGameIntent = new Intent(mContext, MultiplayerResultsActivity.class);
                                 endGameIntent.putExtra("player1", player1)
                                         .putExtra("player2", player2)
