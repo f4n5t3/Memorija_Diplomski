@@ -4,27 +4,37 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
+
+import static ss090310.etf.ac.bg.rs.memorija_diplomski.MainActivity.LARGE_SCREEN_CARD_NUM_INDEX;
+import static ss090310.etf.ac.bg.rs.memorija_diplomski.MainActivity.NORMAL_SCREEN_CARD_NUM_INDEX;
+import static ss090310.etf.ac.bg.rs.memorija_diplomski.MainActivity.SMALL_SCREEN_CARD_NUM_INDEX;
 
 public class MultiPlayerLobbyActivity extends AppCompatActivity {
 
@@ -38,7 +48,6 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
     ArrayList<WifiP2pDevice> peers = new ArrayList<>();
     WifiPeerListAdapter wifiPeerListAdapter;
 
-    boolean wifiP2pEnabled = false;
     boolean gameHost = false;
 
     int seed;
@@ -65,13 +74,11 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_multi_player_lobby);
         // Determine if the view is inflated on the host device
-        gameHost = getIntent().getBooleanExtra("host", false);
+        //gameHost = getIntent().getBooleanExtra("host", false);
 
-        //players = new ArrayList<>();
-        //playerNum = 0;
-        
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
@@ -143,12 +150,12 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
         deviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (gameHost) {
+                //if (gameHost) {
                     WifiP2pDevice device = peers.get(position);
                     WifiP2pConfig deviceConfig = new WifiP2pConfig();
                     deviceConfig.deviceAddress = device.deviceAddress;
                     deviceConfig.wps.setup = WpsInfo.PBC;
-                    deviceConfig.groupOwnerIntent = 15;
+                    //deviceConfig.groupOwnerIntent = 15;
 
                     mManager.connect(mChannel, deviceConfig, new WifiP2pManager.ActionListener() {
                         @Override
@@ -161,28 +168,12 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
                             Toast.makeText(MultiPlayerLobbyActivity.this, "Connect failed, please retry", Toast.LENGTH_SHORT).show();
                         }
                     });
-                }
+                //}
             }
         });
 
-        Button startGameButton = (Button) findViewById(R.id.start_game_button);
-        if (!gameHost) {
-            ((ViewManager) startGameButton.getParent()).removeView(startGameButton);
-        } else {
-            startGameButton.setEnabled(false);
-            startGameButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Random r = new Random();
-                    seed = r.nextInt(1000) + 1;
-                    SharedPreferences prefs = getSharedPreferences(MainActivity.GAME_PREFS, Context.MODE_PRIVATE);
-                    int cardNum = prefs.getInt("card_number", 16);
-                    String difficulty = prefs.getString("difficulty", "easy");
-                    mReceiver.sendMessage("startGame|" + seed + "|" + cardNum + "|" + difficulty);
-                    initializeMultiplayer(cardNum, difficulty);
-                }
-            });
-        }
+        LinearLayout optionsLayout = (LinearLayout) findViewById(R.id.host_options_linear_layout);
+        optionsLayout.setVisibility(View.GONE);
 
     }
 
@@ -197,10 +188,6 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mReceiver);
-    }
-
-    public void setWifiP2pEnabled(boolean wifiP2Penabled) {
-        this.wifiP2pEnabled = wifiP2Penabled;
     }
 
     public void initializeMultiplayer(int cardNum, String difficulty) {
@@ -230,6 +217,54 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
         } else if (parts[0].equals("ready")) {
             Button startGameButton = (Button) findViewById(R.id.start_game_button);
             startGameButton.setEnabled(true);
+        }
+    }
+
+    public void setGameHost(boolean gameHost) {
+        this.gameHost = gameHost;
+        ConstraintLayout lobbyLayout = (ConstraintLayout) findViewById(R.id.lobby_constraint_layout);
+        LinearLayout optionsLayout = (LinearLayout) lobbyLayout.findViewById(R.id.host_options_linear_layout);
+        if (!gameHost) {
+            optionsLayout.setVisibility(View.GONE);
+        } else {
+            optionsLayout.setVisibility(View.VISIBLE);
+
+            String[] cardNumEntries = getResources().getStringArray(R.array.number_of_cards_entries);
+            List<String> cardNumsList = Arrays.asList(cardNumEntries);
+
+            int screenSize = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
+            final Spinner numCardsSpinner = (Spinner) optionsLayout.findViewById(R.id.spinner_num_cards);
+            ArrayAdapter<String> adapter;
+
+            switch (screenSize) {
+                case Configuration.SCREENLAYOUT_SIZE_SMALL:
+                    adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cardNumsList.subList(0, SMALL_SCREEN_CARD_NUM_INDEX));
+                    break;
+                case Configuration.SCREENLAYOUT_SIZE_NORMAL:
+                    adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cardNumsList.subList(0, NORMAL_SCREEN_CARD_NUM_INDEX));
+                    break;
+                case Configuration.SCREENLAYOUT_SIZE_LARGE:
+                    adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cardNumsList.subList(0, LARGE_SCREEN_CARD_NUM_INDEX));
+                    break;
+                default:
+                    adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cardNumsList);
+                    break;
+            }
+            numCardsSpinner.setAdapter(adapter);
+
+            Button startGameButton = (Button) optionsLayout.findViewById(R.id.start_game_button);
+            final Spinner difficultySpinner = (Spinner) optionsLayout.findViewById(R.id.spinner_difficulty);
+            startGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Random r = new Random();
+                    seed = r.nextInt(1000) + 1;
+                    int cardNum = Integer.parseInt(numCardsSpinner.getSelectedItem().toString());
+                    String difficulty = difficultySpinner.getSelectedItem().toString();
+                    mReceiver.sendMessage("startGame|" + seed + "|" + cardNum + "|" + difficulty);
+                    initializeMultiplayer(cardNum, difficulty);
+                }
+            });
         }
     }
 

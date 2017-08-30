@@ -114,8 +114,9 @@ class GameGridAdapter extends BaseAdapter {
         while (i < cardNum/2) {
             int rand = rnd.nextInt(32);
             if (!picked.contains(rand)) {
-                cardFronts.add(mContext.getResources().getIdentifier(difficulty.toLowerCase() + "_" + rand, "drawable", mContext.getPackageName()));
-                cardFronts.add(mContext.getResources().getIdentifier(difficulty.toLowerCase() + "_" + rand, "drawable", mContext.getPackageName()));
+				String cardId = difficulty.toLowerCase() + "_" + rand;
+                cardFronts.add(mContext.getResources().getIdentifier(cardId, "drawable", mContext.getPackageName()));
+                cardFronts.add(mContext.getResources().getIdentifier(cardId, "drawable", mContext.getPackageName()));
                 picked.add(rand);
                 i++;
             }

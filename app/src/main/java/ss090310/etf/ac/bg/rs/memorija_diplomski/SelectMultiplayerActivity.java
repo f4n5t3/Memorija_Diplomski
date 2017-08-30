@@ -33,15 +33,15 @@ public class SelectMultiplayerActivity extends AppCompatActivity {
             }
         });
 
-        Button joinGameButton = (Button) findViewById(R.id.button_join_game);
-        joinGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SelectMultiplayerActivity.this, MultiPlayerLobbyActivity.class);
-                intent.putExtra("host", false);
-                startActivity(intent);
-            }
-        });
+//        Button joinGameButton = (Button) findViewById(R.id.button_join_game);
+//        joinGameButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(SelectMultiplayerActivity.this, MultiPlayerLobbyActivity.class);
+//                intent.putExtra("host", false);
+//                startActivity(intent);
+//            }
+//        });
 
         Button localMultiplayerButton = (Button) findViewById(R.id.button_play_local);
         localMultiplayerButton.setOnClickListener(new View.OnClickListener() {

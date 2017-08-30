@@ -36,7 +36,7 @@
     </string-array>
     <string name="title_activity_single_player">SinglePlayerActivity</string>
 
-    <string name="host_game_label">Host game</string>
+    <string name="host_game_label">LAN Game</string>
     <string name="join_game_label">Join game</string>
     <string name="log_in_label">Log In</string>
     <string name="enter_username_label">Enter username</string>

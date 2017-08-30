@@ -100,4 +100,14 @@ public class SinglePlayerActivity extends AppCompatActivity {
         });
     }
 
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        GridView gameGrid = (GridView) findViewById(R.id.game_grid_view);
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            int colNum = gameGrid.getNumColumns();
+//            gameGrid.setNumColumns(mGridAdapter.getCount() / colNum);
+//            mGridAdapter.notifyDataSetChanged();
+//        }
+//    }
 }

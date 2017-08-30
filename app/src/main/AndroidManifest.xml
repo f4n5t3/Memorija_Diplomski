@@ -22,12 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SinglePlayerActivity" />
-        <activity android:name=".MultiPlayerLobbyActivity" />
+        <activity android:name=".SinglePlayerActivity"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".MultiPlayerLobbyActivity"
+            android:configChanges="orientation|screenSize"/>
         <activity android:name=".EndGameActivity" />
         <activity android:name=".SelectMultiplayerActivity" />
         <activity android:name=".MultiPlayerActivity" />
-        <activity android:name=".MultiplayerResultsActivity"></activity>
+        <activity android:name=".MultiplayerResultsActivity" />
     </application>
 
 </manifest>

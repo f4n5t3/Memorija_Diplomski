@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,9 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private static final int SMALL_SCREEN_CARD_NUM_INDEX = 3;
-    private static final int NORMAL_SCREEN_CARD_NUM_INDEX = 5;
-    private static final int LARGE_SCREEN_CARD_NUM_INDEX = 8;
+    public static final int SMALL_SCREEN_CARD_NUM_INDEX = 3;
+    public static final int NORMAL_SCREEN_CARD_NUM_INDEX = 5;
+    public static final int LARGE_SCREEN_CARD_NUM_INDEX = 8;
 
     private SharedPreferences preferences;
     public static final String GAME_PREFS = "SettingsFile";
@@ -32,10 +33,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
         preferences = getSharedPreferences(GAME_PREFS, Context.MODE_PRIVATE);
 
-        String lastUserName = preferences.getString("username", "");
+        final String lastUserName = preferences.getString("username", "");
         TextView changeUsernameTextView = (TextView) findViewById(R.id.change_username_textview);
 
         if (lastUserName.isEmpty()) {
@@ -105,15 +107,19 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                saveSettings();
-                Log.i(TAG, "onClick: Settings Saved");
-                String difficulty = preferences.getString("difficulty", "easy");
-                int cardNum = preferences.getInt("card_number", 16);
+                if (!lastUserName.isEmpty()) {
+                    saveSettings();
+                    Log.i(TAG, "onClick: Settings Saved");
+                    String difficulty = preferences.getString("difficulty", "easy");
+                    int cardNum = preferences.getInt("card_number", 16);
 
-                Intent startGameIntent = new Intent(getApplicationContext(), SinglePlayerActivity.class);
+                    Intent startGameIntent = new Intent(getApplicationContext(), SinglePlayerActivity.class);
 
-                startGameIntent.putExtra("difficulty", difficulty).putExtra("cardNum", cardNum);
-                startActivity(startGameIntent);
+                    startGameIntent.putExtra("difficulty", difficulty).putExtra("cardNum", cardNum);
+                    startActivity(startGameIntent);
+                } else {
+                    Toast.makeText(MainActivity.this, "Please log in", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

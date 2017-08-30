@@ -76,9 +76,11 @@ public class WifiP2PBroadcastReceiver extends BroadcastReceiver implements WifiP
             if (info.isGroupOwner) {
                 // Server device - game host
                 startGameAsyncTask = new StartGameAsyncTask(mActivity);
+                mActivity.setGameHost(true);
             } else {
                 // Client device
                 startGameAsyncTask = new StartGameAsyncTask(mActivity, info.groupOwnerAddress);
+                mActivity.setGameHost(false);
             }
 
             startGameAsyncTask.execute();
