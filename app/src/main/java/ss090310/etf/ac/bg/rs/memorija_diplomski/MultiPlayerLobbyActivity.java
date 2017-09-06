@@ -253,6 +253,7 @@ public class MultiPlayerLobbyActivity extends AppCompatActivity {
             numCardsSpinner.setAdapter(adapter);
 
             Button startGameButton = (Button) optionsLayout.findViewById(R.id.start_game_button);
+			startGameButton.setEnabled(false);
             final Spinner difficultySpinner = (Spinner) optionsLayout.findViewById(R.id.spinner_difficulty);
             startGameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
